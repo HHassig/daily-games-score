@@ -1,0 +1,66 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+  port: <%= ENV.fetch("DB_PORT") { 5432 } %>
+  username: <%= ENV.fetch("DB_USERNAME") { "postgres" } %>
+  password: <%= ENV.fetch("DB_PASSWORD") { nil } %>
+
+development:
+  <<: *default
+  database: daily_games_score_development
+
+test:
+  <<: *default
+  database: daily_games_score_test
+
+production:
+  primary: &primary_production
+    <<: *default
+    database: daily_games_score_production
+    username: <%= ENV.fetch("DB_USERNAME") { "daily_games_score" } %>
+    password: <%= ENV["DAILY_GAMES_SCORE_DATABASE_PASSWORD"] %>
+    host: <%= ENV.fetch("DB_HOST") { "daily_games_score-db" } %>
+  cache:
+    <<: *primary_production
+    database: daily_games_score_production_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_production
+    database: daily_games_score_production_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_production
+    database: daily_games_score_production_cable
+    migrations_paths: db/cable_migrate
+##################
+# default: &default
+#   adapter: postgresql
+#   encoding: unicode
+#   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+# development:
+#   <<: *default
+#   database: daily_games_score_development
+# test:
+#   <<: *default
+#   database: daily_games_score_test
+# production:
+#   primary: &primary_production
+#     <<: *default
+#     database: daily_games_score_production
+#     username: daily_games_score
+#     password: <%= ENV["daily_games_score_DATABASE_PASSWORD"] %>
+#   cache:
+#     <<: *primary_production
+#     database: daily_games_score_production_cache
+#     migrations_paths: db/cache_migrate
+#   queue:
+#     <<: *primary_production
+#     database: daily_games_score_production_queue
+#     migrations_paths: db/queue_migrate
+#   cable:
+#     <<: *primary_production
+#     database: daily_games_score_production_cable
+#     migrations_paths: db/cable_migrate

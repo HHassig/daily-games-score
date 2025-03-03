@@ -1,0 +1,34 @@
+<% if @user == current_user %>
+  <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+      <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Edit <%= @user.username.nil? || @user.username.empty? ? @user.email : @user.username %></h2>
+    </div>
+    <%= simple_form_for [@user] do |f| %>
+      <div class="mt-4 sm:mx-auto sm:w-full sm:max-w-[480px]">
+        <div class="bg-stone-50 px-6 py-12 shadow sm:rounded-lg sm:px-12">
+            <div>
+              <label for="username" class="block text-sm font-bold leading-6 text-gray-900">Username:</label>
+              <div class="mt-2">
+                <%= f.text_area :username, as: :text, label: false, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2 bg-white" %>
+              </div>
+            </div>
+            <div>
+              <label for="telegram" class="block text-sm font-bold leading-6 text-gray-900">Telegram:</label>
+              <div class="mt-2">
+                <%= f.text_area :telegram_username, as: :text, label: false, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2 bg-white" %>
+              </div>
+            </div>
+            <div>
+              <%= f.submit "Save", class: "mt-4 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+            </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div>
+    <h1 class="text-slate-950 dark:text-slate-50">Not You!</h1>
+    <h3 class="text-slate-950 dark:text-slate-50">Don't try to edit someone else's profile!</h3>
+    <h3 class="text-slate-950 dark:text-slate-50">Edit <%= link_to "your profile", edit_user_path(username: current_user.username) %> instead.</h3>
+  </div>
+<% end %>

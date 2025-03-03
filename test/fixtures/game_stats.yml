@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  game: one
+  average: 9.99
+  played: 1
+  best: 9.99
+  win_percent: 9.99
+
+two:
+  user: two
+  game: two
+  average: 9.99
+  played: 1
+  best: 9.99
+  win_percent: 9.99

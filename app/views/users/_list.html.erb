@@ -1,0 +1,8 @@
+<div class="" data-refresh-list-target="list">
+  <% unless @users.empty? %>
+    <% @users.each do |user| %>
+      <% friendship = Friendship.where(follower_id: current_user.id, followee_id: user.id) %>
+      <p class="text-indigo-600 m-auto mt-2 pl-2"><%= friendship.empty? ? (link_to "👍", friendships_path(user_id: user.id), data: { turbo_method: :post }) : (link_to "👎", friendship_path(friendship.first), method: :delete, data: { turbo_method: :delete, turbo_confirm: "Are you sure?"} ) %><%= link_to user.username, user_path(user.username), class: "pl-2" %></p>
+    <% end %>
+  <% end %>
+</div>

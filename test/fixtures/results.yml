@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  score: MyString
+  game: one
+  gameday: one
+  edition: 1
+  original: MyString
+  numeric_score: MyString
+  won: false
+
+two:
+  user: two
+  score: MyString
+  game: two
+  gameday: two
+  edition: 1
+  original: MyString
+  numeric_score: MyString
+  won: false
