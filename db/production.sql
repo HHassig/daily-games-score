@@ -1,0 +1,4 @@
+CREATE DATABASE daily_games_score_production;
+CREATE DATABASE daily_games_score_production_cache;
+CREATE DATABASE daily_games_score_production_queue;
+CREATE DATABASE daily_games_score_production_cable;
