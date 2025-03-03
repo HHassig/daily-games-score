@@ -9,6 +9,7 @@ class CreateResults < ActiveRecord::Migration[8.0]
       t.string :original
       t.string :numeric_score
       t.boolean :won
+      t.integer :timer
 
       t.timestamps
     end
