@@ -41,3 +41,4 @@ config/deploy.yml
 
 /config/credentials/production.key
 create_models.rb
+crails.sh
