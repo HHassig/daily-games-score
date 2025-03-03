@@ -1,7 +1,8 @@
 Play, record, and compare your daily games scores with your friends. Follow your friends so that they don't have to share their score to multiple chat threads!
 
-<img width="1266" alt="image" src="https://github.com/user-attachments/assets/0316d8db-8e6c-48f7-b2fd-cf437d991ad3" />
+![image](https://github.com/user-attachments/assets/365a3d59-62c6-44cb-9df5-b8591d63988d)
 
-<img width="1262" alt="image" src="https://github.com/user-attachments/assets/faeeb7a6-2213-4bdd-aac3-add84e2171bb" />
+![image](https://github.com/user-attachments/assets/011a3a77-3c46-4c05-9b2a-f6c2bf48285f)
 
-<img width="1259" alt="image" src="https://github.com/user-attachments/assets/a9d06b4c-e3f5-4903-9bc3-6d108f378c92" />
+![image](https://github.com/user-attachments/assets/ff92622a-0fc4-4d5c-b281-ef89397b3456)
+
