@@ -20,9 +20,7 @@ class ParseSportsConnections
   private
 
   def calculate_numeric_score(score)
-    puts score.last
     score = score[1..] if score.first.include?("Time:")
     score.last.chars.uniq.length <= 1 ? score.size.to_s : "9"
-    score.last
   end
 end
