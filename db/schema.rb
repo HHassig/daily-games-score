@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_03_092541) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_16_033608) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "averages", force: :cascade do |t|
+    t.bigint "game_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "score"
+    t.index ["game_id"], name: "index_averages_on_game_id"
+    t.index ["user_id"], name: "index_averages_on_user_id"
+  end
 
   create_table "friendships", force: :cascade do |t|
     t.integer "follower_id"
@@ -89,6 +99,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_092541) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "averages", "games"
+  add_foreign_key "averages", "users"
   add_foreign_key "game_stats", "games"
   add_foreign_key "game_stats", "users"
   add_foreign_key "games", "networks"
