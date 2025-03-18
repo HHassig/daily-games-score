@@ -45,9 +45,9 @@
   <% @leaderboards.each do |leaderboard| %>
     <li class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-stone-50 text-center shadow">
       <div class="flex flex-1 flex-col p-8">
-        <h1><%= Game.find(leaderboard.first.game_id).name.capitalize %></h1>
-        <% leaderboard.each do |lb| %>
-          <h3><%= User.find(lb.user_id).username %>: <%= lb.timer %></h3>
+        <h1><%= Game.find(leaderboard[:game].id).name.capitalize %></h1>
+        <% leaderboard[:results].each do |lb| %>
+          <h3><span class="text-bold"><%= User.find(lb.user_id).username %>:</span> <%= lb.timer %></h3>
         <% end %>
       </div>
     </li>
