@@ -1,3 +1,5 @@
 <% @leaderboards.each do |leaderboard| %>
-  <%= leaderboard %>
+  <% leaderboard.each do |lb| %>
+    <%= lb.user_id %>
+  <% end %>
 <% end %>
