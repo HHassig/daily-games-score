@@ -1,7 +1,3 @@
-[User, Friendship, GameStat, Game, Gameday, Network, Result].each do |model|
-end
-
-
 require "json"
 
 class ImportDatabase

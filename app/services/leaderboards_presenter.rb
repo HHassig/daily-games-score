@@ -1,0 +1,11 @@
+class LeaderboardsPresenter
+  attr_reader :date
+
+  def initialize(date)
+    @date = date
+  end
+
+  def set
+    Game.all.map { |game| Result.where(gameday_id: Gameday.find_by(date: @date).id, game: game).order(:timer).limit(5) }
+  end
+end
