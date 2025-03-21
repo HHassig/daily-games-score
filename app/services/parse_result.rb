@@ -23,6 +23,7 @@ class ParseResult
     return ParseConnections.new(@result).parse if @game.name == "connections"
     return ParsePinpoint.new(@result).parse if @game.name == "pinpoint"
     return ParseStrands.new(@result).parse if @game.name == "strands"
+    return ParseZip.new(@result).parse if @game.name == "zip"
     if @mobile
       return ParseTango.new(@result).mobile if @game.name == "tango"
       return ParseQueens.new(@result).mobile if @game.name == "queens"
