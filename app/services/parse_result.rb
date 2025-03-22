@@ -12,7 +12,7 @@ class ParseResult
     @result = parse_result
     @result.save! if Result.where(gameday_id: @result.gameday_id, user_id: @user.id, game_id: @game.id).empty?
     # GameStats.new(@user, @game).calculate
-    CalculateAverage(@user, @game).average
+    CalculateAverage.new(@user, @game).average
     @result
   end
 
