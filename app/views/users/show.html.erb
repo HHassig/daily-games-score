@@ -35,6 +35,11 @@
       <span class="text-md">Following: <%= @following.size %></span> |
       <span class="text-md">Followers: <%= @followers.size %></span>
     </div>
+    <%= form_with(url: request.fullpath, method: :get) do |form| %>
+      <%= form.label :date, "Change Date:" %>
+      <%= form.date_field :date, value: params[:date] %>
+      <%= form.submit "Search", name: nil %>
+    <% end %>
     <div class="mt-4 flex flex-shrink-0 md:ml-4 md:mt-0 justify-center">
       <% if user_signed_in? %>
       <%= link_to "My games", games_path, method: :get, class: "w-22 text-center ml-3 inline-flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
@@ -50,15 +55,25 @@
 </div>
 
 
+
+<!---->
 <ul role="list" class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-  <li class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-stone-50 shadow">
-    <div class="flex flex-1 flex-col p-8">
-      <h3 class="text-center text-2xl">Games Played</h3>
-      <div class="text-left">
-        <% @games.each do |game| %>
-          <p class="mt-2 text-left"><%= link_to game.display_name, game_path(game.name), class: "text-strong text-indigo-600 text-xl" %></p>
+  <% @games.each do |game| %>
+    <li class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-stone-50 text-center shadow">
+      <div class="flex flex-1 flex-col p-8">
+        <%= (image_tag game.logo, alt: game.name, class: "mb-2 w-1/2 m-auto rounded-lg") unless game.logo.nil? %>
+        <%= link_to game.display_name, game_path(game.name, date: @gameday.date), class: "text-indigo-600 text-strong text-3xl" %>
+        <% if Result.where(game: game, user: current_user, gameday_id: @gameday.id).empty? %>
+          <%= link_to "Play", game.url, target: "_blank", class: "text-indigo-600 text-strong text-xl" %>
+          <%= link_to "Record", new_game_result_path(game.name), class: "text-indigo-600 text-strong text-xl" %>
+        <% else %>
+          <h4 class="text-indigo-600 text-strong text-xl">
+            <% result = Result.find_by(game: game, user: current_user, gameday_id: @gameday.id) %>
+            <%= link_to result.numeric_score, game_result_path(game.name, result) %>
+          </h4>
         <% end %>
       </div>
-    </div>
-  </li>
+    </li>
+  <% end %>
 </ul>
+<!---->

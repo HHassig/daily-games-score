@@ -15,8 +15,9 @@ class UsersController < ApplicationController
   def show
     @user = User.find_by("username ILIKE ?", params[:username])
     @followers = Friendship.where(followee_id: current_user.id)
-    @following = Friendship.where(follower_id: current_user.id) if current_user
-    @games = Game.where(id: Result.where(user: @user).pluck(:game_id).uniq).order(:name)
+    @following = Friendship.where(follower_id: current_user.id)
+    @games = Result.where(user: current_user).map(&:game).uniq.sort_by { |game| -Result.where(user: current_user).count { |r| r.game == game } }
+    @gameday = params[:date].present? ? Gameday.find_or_create_by!(date: params[:date]) : Gameday.find_or_create_by!(date: Date.today.strftime("%Y-%m-%d"))
   end
 
   def edit
