@@ -34,7 +34,7 @@
       <% end %>
       <span class="text-md">Following: <%= @following.size %></span> |
       <span class="text-md">Followers: <%= @followers.size %></span>
-      <h4 class="text xl" id="date-selector">
+      <h4 class="text-xl mt-2" id="date-selector">
         <%= form_with(url: request.fullpath, method: :get) do |form| %>
           <%= form.label :date, "Change Date:" %>
           <%= form.date_field :date, value: params[:date] %>
