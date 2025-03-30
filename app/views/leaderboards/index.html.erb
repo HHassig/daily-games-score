@@ -21,11 +21,13 @@
   <div class="mt-2 md:flex md:items-center md:justify-between">
     <div class="min-w-0 flex-1">
       <h2 class="mb-4 text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:tracking-tight">Leaderboards <span class="text-indigo-600"><%= @gameday.date %></span></h2>
-      <%= form_with(url: request.fullpath, method: :get) do |form| %>
+      <h4 class="text-xl mt-2" id="date-selector">
+        <%= form_with(url: request.fullpath, method: :get) do |form| %>
           <%= form.label :date, "Change Date:" %>
           <%= form.date_field :date, value: params[:date] %>
           <%= form.submit "Search", name: nil %>
         <% end %>
+      </h4>
     </div>
     <div class="mt-4 flex flex-shrink-0 md:ml-4 md:mt-0 justify-center">
       <% if user_signed_in? %>
