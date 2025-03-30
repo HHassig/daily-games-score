@@ -49,7 +49,10 @@
       <div class="flex flex-1 flex-col p-8">
         <h1><%= link_to leaderboard[:game].display_name, game_path(leaderboard[:game].name), class: "text-indigo-600 text-strong text-3xl" %></h1>
         <% leaderboard[:results].each do |lb| %>
-          <h3 class="text-lg"><span class="font-bold"><%= link_to User.find(lb.user_id).username, user_path(User.find(lb.user_id).username) %>:</span> <%= link_to lb.timer, game_result_path(leaderboard[:game].name, lb) %></h3>
+          <div class="flex flex-row justify-between">
+            <h3 class="text-lg font-bold w-24 text-left"><%= link_to User.find(lb.user_id).username, user_path(User.find(lb.user_id).username) %>:</h3>
+            <h3 class="text-lg"><%= link_to lb.timer, game_result_path(leaderboard[:game].name, lb) %></h3>
+          </div>
         <% end %>
       </div>
     </li>
