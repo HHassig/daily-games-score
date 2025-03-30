@@ -50,7 +50,7 @@
         <% leaderboard[:results].each do |lb| %>
           <div class="flex flex-row justify-between w-1/2 m-auto text-lg">
             <h3 class="font-bold w-24 text-left"><%= link_to User.find(lb.user_id).username, user_path(User.find(lb.user_id).username) %>:</h3>
-            <h3><%= link_to lb.timer, game_result_path(leaderboard[:game].name, lb), class: "text-left" %></h3>
+            <h3><%= link_to (leaderboard[:game].timed? ? lb.display_timer(lb.timer) : lb.timer), game_result_path(leaderboard[:game].name, lb), class: "text-left" %></h3>
           </div>
         <% end %>
       </div>
