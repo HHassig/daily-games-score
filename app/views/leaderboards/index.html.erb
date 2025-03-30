@@ -46,10 +46,10 @@
 <ul role="list" class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
   <% @leaderboards.each do |leaderboard| %>
     <li class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-stone-50 text-center shadow">
-      <div class="flex flex-1 flex-col p-8">
+      <div class="flex flex-1 flex-col pt-8">
         <h1><%= link_to leaderboard[:game].display_name, game_path(leaderboard[:game].name), class: "text-indigo-600 text-strong text-3xl" %></h1>
         <% leaderboard[:results].each do |lb| %>
-          <div class="flex flex-row justify-between w-3/5">
+          <div class="flex flex-row justify-between w-7/10 m-auto">
             <h3 class="text-lg font-bold w-24 text-left"><%= link_to User.find(lb.user_id).username, user_path(User.find(lb.user_id).username) %>:</h3>
             <h3 class="text-lg"><%= link_to lb.timer, game_result_path(leaderboard[:game].name, lb) %></h3>
           </div>
