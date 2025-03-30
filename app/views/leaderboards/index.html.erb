@@ -49,8 +49,8 @@
         <%= (image_tag leaderboard[:game].logo, alt: leaderboard[:game].name, class: "mb-2 w-1/2 m-auto mt-4 rounded-lg") unless leaderboard[:game].logo.nil? %>
         <h1><%= link_to leaderboard[:game].display_name, game_path(leaderboard[:game].name), class: "mb-4 text-indigo-600 text-strong text-3xl" %></h1>
         <% leaderboard[:results].each do |lb| %>
-          <div class="flex flex-row justify-between w-1/2 m-auto text-lg">
-            <h3 class="font-bold w-24 text-left"><%= link_to User.find(lb.user_id).username, user_path(User.find(lb.user_id).username) %>:</h3>
+          <div class="flex flex-row justify-betweenm-auto text-lg">
+            <h3 class="font-bold text-left w-3/4"><%= link_to User.find(lb.user_id).username, user_path(User.find(lb.user_id).username) %>:</h3>
             <h3><%= link_to (leaderboard[:game].timed? ? lb.display_timer(lb.timer) : lb.timer), game_result_path(leaderboard[:game].name, lb), class: "text-left" %></h3>
           </div>
         <% end %>
