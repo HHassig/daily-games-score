@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_16_033608) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_30_140319) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -58,6 +58,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_16_033608) do
     t.string "logo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "timed"
     t.index ["network_id"], name: "index_games_on_network_id"
   end
 
@@ -79,6 +80,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_16_033608) do
     t.boolean "won"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "secondary_timer"
     t.index ["game_id"], name: "index_results_on_game_id"
     t.index ["gameday_id"], name: "index_results_on_gameday_id"
     t.index ["user_id"], name: "index_results_on_user_id"
