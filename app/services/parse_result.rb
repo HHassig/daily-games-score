@@ -12,7 +12,7 @@ class ParseResult
     @result = parse_result
     begin
       @result.save! if Result.where(gameday_id: @result.gameday_id, user_id: @user.id, game_id: @game.id).empty?
-    rescue ActiveRecord::RecordInvalid
+    rescue ActiveRecord::NotNullViolation => e
       return nil
     end
     # GameStats.new(@user, @game).calculate
