@@ -10,7 +10,11 @@ class ParseResult
 
   def parse
     @result = parse_result
-    @result.save! if Result.where(gameday_id: @result.gameday_id, user_id: @user.id, game_id: @game.id).empty?
+    begin
+      @result.save! if Result.where(gameday_id: @result.gameday_id, user_id: @user.id, game_id: @game.id).empty?
+    rescue ActiveRecord::RecordInvalid
+      return nil
+    end
     # GameStats.new(@user, @game).calculate
     CalculateAverage.new(@user, @game).average
     @result
