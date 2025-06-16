@@ -1,5 +1,5 @@
 service: daily_games_score
-image: hhassig/daily_games_scores
+image: hhassig/daily-games-score
 servers:
   web:
     hosts:
