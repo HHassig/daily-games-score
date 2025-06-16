@@ -3,7 +3,7 @@ image: hhassig/daily_games_scores
 servers:
   web:
     hosts:
-      - 5.78.120.19
+      - 5.78.45.115
     env:
       DB_HOST: daily_games_score-db
       SOLID_QUEUE_IN_PUMA: "true"
@@ -31,7 +31,7 @@ env:
     - POSTGRES_PASSWORD
   clear:
     SOLID_QUEUE_IN_PUMA: true
-    DB_HOST: 5.78.120.19
+    DB_HOST: 5.78.45.115
 aliases:
   console: app exec --interactive --reuse "bin/rails console"
   shell: app exec --interactive --reuse "bash"
@@ -45,7 +45,7 @@ builder:
 accessories:
   db:
     image: postgres:16
-    host: 5.78.120.19
+    host: 5.78.45.115
     port: 5436:5432
     env:
       POSTGRES_USER: daily_games_score
