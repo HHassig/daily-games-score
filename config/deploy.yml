@@ -20,18 +20,13 @@ env:
     - POSTGRES_PASSWORD
     - DAILY_GAMES_SCORE_DATABASE_PASSWORD
     - TELEGRAM_API_KEY
-    - RAILS_MASTER_KEY
     - KAMAL_REGISTRY_PASSWORD
-    - POSTGRES_PASSWORD
-    - DAILY_GAMES_SCORE_DATABASE_PASSWORD
-    - TELEGRAM_API_KEY
-    - POSTGRES_USER
-    - POSTGRES_DB
-    - POSTGRES_PORT
-    - POSTGRES_PASSWORD
   clear:
     SOLID_QUEUE_IN_PUMA: true
-    DB_HOST: 5.78.45.115
+    POSTGRES_USER: daily_games_score
+    POSTGRES_DB: daily_games_score_production
+    POSTGRES_HOST: daily_games_score-db
+    POSTGRES_PORT: 5432
 aliases:
   console: app exec --interactive --reuse "bin/rails console"
   shell: app exec --interactive --reuse "bash"
@@ -49,7 +44,9 @@ accessories:
     port: 5436:5432
     env:
       POSTGRES_USER: daily_games_score
+      POSTGRES_PASSWORD:
+        - POSTGRES_PASSWORD
       POSTGRES_DB: daily_games_score_production
     volumes:
-      - /root/daily_games_score-db/data:/var/lib/postgresql/data
-      - /root/daily_games_score-db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - /srv/daily_games_score/postgres-data:/var/lib/postgresql/data
+      - /srv/daily_games_score/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
