@@ -8,7 +8,7 @@ servers:
       DB_HOST: daily_games_score-db
       SOLID_QUEUE_IN_PUMA: "true"
 proxy:
-  ssl: true
+  ssl: false
   host: dgs.hassig.com
 registry:
   username: hhassig
