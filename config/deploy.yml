@@ -43,9 +43,11 @@ accessories:
     host: 100.97.138.69
     port: 5436:5432
     env:
-      POSTGRES_USER: daily_games_score
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: daily_games_score_production
+      clear:
+        POSTGRES_USER: daily_games_score
+        POSTGRES_DB: daily_games_score_production
+      secret:
+        - POSTGRES_PASSWORD
     volumes:
       - /srv/daily_games_score/postgres-data:/var/lib/postgresql/data
       - /srv/daily_games_score/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
