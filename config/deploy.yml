@@ -3,7 +3,7 @@ image: hhassig/daily-games-score
 servers:
   web:
     hosts:
-      - 100.97.138.69
+      - 100.71.23.44
     env:
       DB_HOST: daily_games_score-db
       SOLID_QUEUE_IN_PUMA: "true"
@@ -40,7 +40,7 @@ builder:
 accessories:
   db:
     image: postgres:16
-    host: 100.97.138.69
+    host: 100.71.23.44
     port: 5436:5432
     env:
       clear:
