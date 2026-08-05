@@ -3,7 +3,7 @@ image: hhassig/daily-games-score
 servers:
   web:
     hosts:
-      - 100.71.23.44
+      - 100.119.170.114
     env:
       DB_HOST: daily_games_score-db
       SOLID_QUEUE_IN_PUMA: "true"
@@ -12,6 +12,9 @@ proxy:
   ssl: false
   host: dgs.hassig.com
   app_port: 3000
+ssh:
+  user: harrison
+
 registry:
   username: hhassig
   password:
@@ -42,7 +45,7 @@ builder:
 accessories:
   db:
     image: postgres:16
-    host: 100.71.23.44
+    host: 100.119.170.114
     port: 5436:5432
     env:
       secret:
@@ -51,5 +54,5 @@ accessories:
         POSTGRES_USER: daily_games_score
         POSTGRES_DB: daily_games_score_production
     volumes:
-      - /root/daily_games_score-db/data:/var/lib/postgresql/data
-      - /root/daily_games_score-db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - /home/harrison/daily_games_score-db/data:/var/lib/postgresql/data
+      - /home/harrison/daily_games_score-db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
