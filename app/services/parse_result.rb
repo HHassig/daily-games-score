@@ -29,6 +29,8 @@ class ParseResult
     return ParsePinpoint.new(@result).parse if @game.name == "pinpoint"
     return ParseStrands.new(@result).parse if @game.name == "strands"
     return ParseZip.new(@result).parse if @game.name == "zip"
+    return ParseWend.new(@result).parse if @game.name == "wend"
+    return ParsePatches.new(@result).parse if @game.name == "patches"
     if @mobile
       return ParseTango.new(@result).mobile if @game.name == "tango"
       return ParseQueens.new(@result).mobile if @game.name == "queens"
