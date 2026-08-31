@@ -1,8 +1,10 @@
 <% content_for :title, "#{@gameday.date} · Daily Games" %>
 <%= render "shared/page_header", title: "My games", gameday: @gameday %>
 
+<% pips_results, regular_results = @results.partition { |r| pips?(r.game) } %>
 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-  <% @results.each do |result| %>
+  <%= render "shared/pips_tile", pips_games: pips_results.map(&:game), user: current_user, gameday: @gameday if pips_results.any? %>
+  <% regular_results.each do |result| %>
     <% game = result.game %>
     <div class="flex flex-col items-center rounded-xl bg-white p-4 text-center shadow-sm ring-1 ring-gray-950/5">
       <%= (image_tag game.logo, alt: game.name, class: "mb-2 h-12 w-12 rounded-lg") unless game.logo.nil? %>

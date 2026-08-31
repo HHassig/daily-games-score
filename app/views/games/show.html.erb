@@ -3,7 +3,17 @@
   <div class="flex items-center gap-3">
     <%= (image_tag @game.logo, alt: @game.name, class: "h-12 w-12 rounded-lg") unless @game.logo.nil? %>
     <div>
-      <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl"><%= @game.display_name %></h1>
+      <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl"><%= pips?(@game) ? "Pips" : @game.display_name %></h1>
+      <% if pips?(@game) %>
+        <div class="mt-1 flex rounded-lg bg-gray-100 p-0.5" style="width:fit-content">
+          <% %w[pips-easy pips-medium pips-hard].each do |name| %>
+            <% sibling = Game.find_by(name: name) %>
+            <% next if sibling.nil? %>
+            <%= link_to sibling.display_name.sub("Pips ", ""), game_path(sibling.name, date: @gameday.date),
+                  class: "rounded-md px-2 py-1 text-xs font-semibold " + (sibling == @game ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-800") %>
+          <% end %>
+        </div>
+      <% end %>
       <div class="mt-0.5 flex gap-3 text-sm">
         <%= link_to "Play ↗", @game.url, target: "_blank", class: "font-semibold text-indigo-600 hover:underline" %>
         <% if user_signed_in? %>

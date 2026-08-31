@@ -1,7 +1,7 @@
 <% content_for :title, "Leaderboards · Daily Games" %>
 <%= render "shared/page_header", title: "Leaderboards", gameday: @gameday %>
 
-<% if @presenter.played.any? %>
+<% if @presenter.played.any? || @presenter.pips %>
   <% champs = @presenter.champions %>
   <% if champs.any? %>
     <% top_wins = champs.first.last %>
@@ -17,6 +17,7 @@
   <% end %>
 
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <%= render "shared/pips_board", pips_boards: @presenter.pips, gameday: @gameday if @presenter.pips %>
     <% @presenter.played.each do |board| %>
       <% game = board[:game] %>
       <div class="flex flex-col rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-950/5">
@@ -46,14 +47,14 @@
   </div>
 <% end %>
 
-<% if @presenter.unplayed.any? && @presenter.played.any? %>
+<% if @presenter.unplayed.any? && (@presenter.played.any? || @presenter.pips) %>
   <div class="mt-8">
     <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-400">No plays yet</h2>
     <div class="mt-2 flex flex-wrap items-center gap-3">
       <% @presenter.unplayed.each do |game| %>
         <%= link_to game_path(game.name, date: @gameday.date), title: game.display_name, class: "flex items-center gap-2 rounded-lg bg-white px-3 py-2 opacity-60 shadow-sm ring-1 ring-gray-950/5 transition hover:opacity-100" do %>
           <%= (image_tag game.logo, alt: game.name, class: "h-6 w-6 rounded") unless game.logo.nil? %>
-          <span class="text-sm font-medium text-gray-600"><%= game.display_name %></span>
+          <span class="text-sm font-medium text-gray-600"><%= pips?(game) ? "Pips" : game.display_name %></span>
         <% end %>
       <% end %>
     </div>

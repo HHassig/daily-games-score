@@ -21,6 +21,11 @@ module ApplicationHelper
     end
   end
 
+  # The three Pips difficulties are separate Game rows but ONE tile in the UI.
+  def pips?(game)
+    game.name.start_with?("pips-")
+  end
+
   def rank_badge(index)
     %w[🥇 🥈 🥉][index] || "#{index + 1}."
   end

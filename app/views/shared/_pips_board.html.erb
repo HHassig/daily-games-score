@@ -1,0 +1,36 @@
+<%# Combined Pips leaderboard card: one tile, segmented Easy/Medium/Hard tabs. %>
+<% default_index = pips_boards.index { |b| b[:results].any? } || 0 %>
+<div class="flex flex-col rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-950/5"
+     data-controller="tabs" data-tabs-index-value="<%= default_index %>">
+  <div class="mb-3 flex items-center justify-between gap-2">
+    <div class="flex min-w-0 items-center gap-3">
+      <%= image_tag pips_boards.first[:game].logo, alt: "Pips", class: "h-10 w-10 rounded-lg" %>
+      <%= link_to "Pips", game_path(pips_boards.first[:game].name, date: gameday.date), class: "truncate text-lg font-bold text-gray-900 hover:text-indigo-600" %>
+    </div>
+    <div class="flex shrink-0 rounded-lg bg-gray-100 p-0.5">
+      <% pips_boards.each_with_index do |board, i| %>
+        <button type="button" data-tabs-target="tab" data-index="<%= i %>" data-action="tabs#show"
+                class="rounded-md px-2 py-1 text-xs font-semibold text-gray-500">
+          <%= board[:game].display_name.sub("Pips ", "") %>
+        </button>
+      <% end %>
+    </div>
+  </div>
+  <% pips_boards.each_with_index do |board, i| %>
+    <ol class="flex flex-col divide-y divide-gray-100" data-tabs-target="panel" style="<%= "display:none" unless i == default_index %>">
+      <% if board[:results].any? %>
+        <% board[:results].each_with_index do |result, i| %>
+          <li class="flex items-center justify-between gap-2 px-1 py-1.5 <%= "rounded-md bg-indigo-50/70" if current_user && result.user_id == current_user.id %>">
+            <span class="flex min-w-0 items-center gap-2 text-sm">
+              <span class="w-6 shrink-0 text-center"><%= rank_badge(i) %></span>
+              <%= link_to result.user.username, user_path(result.user.username), class: "truncate font-medium text-gray-800 hover:text-indigo-600" %>
+            </span>
+            <%= link_to display_score(board[:game], result), game_result_path(board[:game].name, result), class: "shrink-0 font-mono text-sm font-semibold tabular-nums text-gray-900 hover:text-indigo-600" %>
+          </li>
+        <% end %>
+      <% else %>
+        <li class="px-1 py-1.5 text-sm text-gray-400">No plays yet</li>
+      <% end %>
+    </ol>
+  <% end %>
+</div>

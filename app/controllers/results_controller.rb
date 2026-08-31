@@ -16,11 +16,21 @@ class ResultsController < ApplicationController
   end
 
   def create
-    result = ParseResult.new(Result.new(result_params.merge(user_id: current_user.id, game_id: @game.id))).parse
-    if result&.persisted?
-      redirect_to game_result_path(@game.name, result)
-    elsif (existing = existing_result(result))
-      redirect_to game_result_path(@game.name, existing), notice: "That day was already recorded."
+    original = result_params[:original]
+    names = Game.pluck(:display_name, :name).to_h { |display, name| [display.to_s.downcase, name] }
+    chunks = GameChunks.split(original, names)
+    chunks = [[@game.name, original]] if chunks.empty? # unclassifiable: trust the page's game
+    results = chunks.filter_map do |game_name, chunk|
+      game = Game.find_by(name: game_name)
+      next if game.nil?
+      ParseResult.new(Result.new(original: chunk, user_id: current_user.id, game_id: game.id)).parse
+    end
+    if results.size > 1
+      redirect_to games_path, notice: "Recorded #{results.size} scores."
+    elsif results.one?
+      redirect_to game_result_path(results.first.game.name, results.first)
+    elsif (existing = existing_result_for(chunks))
+      redirect_to game_result_path(existing.game.name, existing), notice: "That day was already recorded."
     else
       redirect_to new_game_result_path(@game.name), alert: "Couldn't read that score — paste the exact share text."
     end
@@ -32,9 +42,17 @@ class ResultsController < ApplicationController
     @game = Game.find_by!(name: params[:game_name])
   end
 
-  def existing_result(parsed)
-    return nil if parsed&.gameday_id.nil?
-    Result.find_by(user: current_user, game: @game, gameday_id: parsed.gameday_id)
+  def existing_result_for(chunks)
+    chunks.each do |game_name, chunk|
+      game = Game.find_by(name: game_name)
+      next if game.nil?
+      probe = Result.new(original: chunk, user_id: current_user.id, game_id: game.id)
+      ParseResult::PARSERS[game.name]&.new(probe)&.parse
+      next if probe.gameday_id.nil?
+      existing = Result.find_by(user: current_user, game: game, gameday_id: probe.gameday_id)
+      return existing if existing
+    end
+    nil
   end
 
   def result_params
