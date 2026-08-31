@@ -5,8 +5,10 @@ class CalculateSeconds
     @time = time
   end
 
+  # "M:SS" or "H:MM:SS" -> total seconds. Nil-safe: returns nil for no time.
   def convert
-    minutes, seconds = @time.split(":").map(&:to_i)
-    (minutes * 60) + seconds
+    parts = @time.to_s.scan(/\d+/).map(&:to_i)
+    return nil if parts.empty?
+    parts.inject(0) { |acc, part| acc * 60 + part }
   end
 end

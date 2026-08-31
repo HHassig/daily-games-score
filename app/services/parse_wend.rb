@@ -1,4 +1,10 @@
 class ParseWend
+  include LinkedinTimedParse
+  EPOCH = Date.new(2026, 6, 8)
+
+  BACKTRACKS      = /(\d+)\s+(?:backtracks?|terugzett\w*)/i
+  ZERO_BACKTRACKS = /no\s+backtracks/i
+
   attr_reader :result
 
   def initialize(result)
@@ -6,17 +12,18 @@ class ParseWend
   end
 
   def parse
-    begin
-      temp = @result.original.split("\n")
-      @result.edition = temp[0].match(/#(\d+)/)[1]
-      @result.score = temp[1]
-      @result.numeric_score = temp[0].split("|").last.strip
-      @result.timer = CalculateSeconds.new(@result.numeric_score.split(" ").first).convert
-      @result.secondary_timer = temp[1][/(\d+)\s+backtracks?/, 1].to_i
-      @result.gameday_id = Gameday.find_or_create_by!(date: (Date.new(2026, 6, 8) + @result.edition).strftime("%Y-%m-%d")).id
-    rescue
-      # Do nothing, just return @result as-is
-    end
+    return @result unless assign_time_and_day(EPOCH)
+    line = detail_lines.first # "With no hints & no backtracks"
+    @result.score = line
+    @result.secondary_timer =
+      if (count = line.to_s[BACKTRACKS, 1])
+        count.to_i
+      elsif line.to_s.match?(ZERO_BACKTRACKS)
+        0
+      end
+    @result
+  rescue => e
+    log_parse_failure(e)
     @result
   end
 end

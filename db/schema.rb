@@ -10,17 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_30_140319) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_31_210000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "averages", force: :cascade do |t|
+    t.decimal "score"
     t.bigint "game_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.decimal "score"
     t.index ["game_id"], name: "index_averages_on_game_id"
+    t.index ["user_id", "game_id"], name: "index_averages_on_user_id_and_game_id", unique: true
     t.index ["user_id"], name: "index_averages_on_user_id"
   end
 
@@ -48,6 +49,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_30_140319) do
     t.string "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_gamedays_on_date", unique: true
   end
 
   create_table "games", force: :cascade do |t|
@@ -80,9 +82,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_30_140319) do
     t.boolean "won"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "timer"
     t.integer "secondary_timer"
     t.index ["game_id"], name: "index_results_on_game_id"
     t.index ["gameday_id"], name: "index_results_on_gameday_id"
+    t.index ["user_id", "game_id", "gameday_id"], name: "index_results_on_user_game_gameday", unique: true
     t.index ["user_id"], name: "index_results_on_user_id"
   end
 

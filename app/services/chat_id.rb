@@ -1,5 +1,7 @@
 require "open-uri"
 
+# Links a user to their Telegram chat id: the user either has their telegram
+# username on file, or sends their account email to the bot.
 class ChatId
   attr_reader :user
 
@@ -8,15 +10,24 @@ class ChatId
   end
 
   def set
-    JSON.parse(URI.open("#{ENV.fetch('TELEGRAM_API_KEY')}/getUpdates").read)["result"].each { |info| find_chat_id(info, @user) }
+    updates.each { |update| find_chat_id(update) }
   end
 
   private
 
-  def find_chat_id(info, user)
-    username = info["message"]["from"]["username"]
-    chat_id = info["message"]["from"]["id"] if user == User.find_by(telegram_username: username) unless username.nil?
-    chat_id = info["message"]["from"]["id"] if user == User.find_by(email: info["message"]["text"])
-    user.update!(telegram_chat_id: chat_id) unless chat_id.nil?
+  def updates
+    JSON.parse(URI.open("#{ENV.fetch('TELEGRAM_API_KEY')}/getUpdates").read)["result"] || []
+  rescue OpenURI::HTTPError, JSON::ParserError, SocketError, SystemCallError => e
+    Rails.logger.warn("ChatId: getUpdates failed: #{e.class}: #{e.message}")
+    []
+  end
+
+  def find_chat_id(update)
+    message = update["message"] || update["edited_message"]
+    return if message.nil?
+    from = message["from"] || {}
+    matched = (from["username"].present? && from["username"] == @user.telegram_username) ||
+              (message["text"].present? && message["text"].strip.casecmp?(@user.email))
+    @user.update!(telegram_chat_id: from["id"].to_s) if matched && from["id"]
   end
 end

@@ -7,12 +7,11 @@ class CalculateAverage
   end
 
   def average
-    result_stats = Result.where(game: @game, user: @user).pick(Arel.sql("SUM(timer) AS total_time, COUNT(*) AS result_count"))
-    return Average.find_or_create_by!(user: @user, game: @game, score: 0.0) if result_stats.nil? || result_stats[1] == 0
-    total_time, result_count = result_stats
-    new_score = total_time.to_f / result_count
-    average = Average.find_or_create_by!(user: @user, game: @game)
-    average.update!(score: new_score) if average.score != new_score
-    average
+    total, count = Result.where(game: @game, user: @user)
+                         .pick(Arel.sql("SUM(timer), COUNT(timer)"))
+    new_score = count.to_i.positive? ? total.to_f / count : 0.0
+    record = Average.find_or_create_by!(user: @user, game: @game)
+    record.update!(score: new_score) if record.score != new_score
+    record
   end
 end

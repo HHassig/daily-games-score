@@ -13,12 +13,12 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find_by("username ILIKE ?", params[:username])
+    @user = User.find_by!("username ILIKE ?", params[:username])
     @followers = Friendship.where(followee_id: current_user.id)
     @following = Friendship.where(follower_id: current_user.id)
     counts = Result.where(user: @user).group(:game_id).count
     @games = Game.where(id: counts.keys).sort_by { |game| -counts[game.id] }
-    @gameday = params[:date].present? ? Gameday.find_or_create_by!(date: params[:date]) : Gameday.find_or_create_by!(date: Date.today.strftime("%Y-%m-%d"))
+    @gameday = Gameday.for(params[:date])
   end
 
   def edit
@@ -26,10 +26,10 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = User.find_by("username ILIKE ?", params[:user][:username])
+    @user = current_user
     @user.update!(user_params)
-    parse_telegram(@user) unless @user.telegram_username.nil?
-    ChatId.new(@user).set unless @user.telegram_username.nil?
+    @user.update!(telegram_username: @user.telegram_username[1..]) if @user.telegram_username&.start_with?("@")
+    ChatId.new(@user).set if @user.telegram_username.present?
     redirect_to user_path(username: @user.username)
   end
 
@@ -37,9 +37,5 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:username, :email, :telegram_username, :telegram_chat_id)
-  end
-
-  def parse_telegram(user)
-    user.update!(telegram_username: user.telegram[1..]) if user.telegram_username[0] == "@"
   end
 end

@@ -8,5 +8,5 @@ Rails.application.routes.draw do
   end
   resources :gamedays, param: :date
   resources :friendships
-  resources :leaderboards
+  resources :leaderboards, only: :index
 end

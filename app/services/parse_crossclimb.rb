@@ -1,4 +1,7 @@
 class ParseCrossclimb
+  include LinkedinTimedParse
+  EPOCH = Date.new(2024, 4, 30)
+
   attr_reader :result
 
   def initialize(result)
@@ -6,22 +9,12 @@ class ParseCrossclimb
   end
 
   def parse
-    temp = @result.original.split("\n")
-    @result.edition = temp[0].match(/#(\d+)/)[1]
-    @result.score = temp[1..temp.size - 2]
-    @result.numeric_score = temp[0].split("|").last.strip
-    @result.timer = CalculateSeconds.new(@result.numeric_score.split(" ").first).convert
-    @result.gameday_id = Gameday.find_or_create_by!(date: (Date.new(2024, 4, 30) + @result.edition).strftime("%Y-%m-%d")).id
+    return @result unless assign_time_and_day(EPOCH)
+    # Keep only the fill-order line; streak/CEO brags are dropped by detail_lines
+    @result.score = detail_lines.find { |l| l.match?(/\A(Fill order|Invulvolgorde):/i) } || detail_lines.first
     @result
-  end
-
-  def mobile
-    temp = @result.original.split("\n")
-    @result.edition = temp[0].match(/#(\d+)/)[1]
-    @result.score = temp[1..temp.size - 2].first
-    @result.numeric_score = temp[1].split(" ").first.strip
-    @result.timer = CalculateSeconds.new(@result.numeric_score.split(" ").first).convert
-    @result.gameday_id = Gameday.find_or_create_by!(date: (Date.new(2024, 4, 30) + @result.edition).strftime("%Y-%m-%d")).id
+  rescue => e
+    log_parse_failure(e)
     @result
   end
 end

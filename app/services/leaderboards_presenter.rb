@@ -1,9 +1,8 @@
 class LeaderboardsPresenter
-  attr_reader :date, :gameday
+  attr_reader :gameday
 
-  def initialize(date)
-    @date = date
-    @gameday = Gameday.find_or_create_by!(date: date)
+  def initialize(gameday)
+    @gameday = gameday
   end
 
   # Every game with its ranked results for the day (best first).

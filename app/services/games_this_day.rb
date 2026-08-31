@@ -7,12 +7,6 @@ class GamesThisDay
   end
 
   def games
-    Result.where(user: @user, gameday_id: @gameday.id).map {|result| Game.find(result.game_id)}.sort_by(&:name)
-  end
-
-  private
-
-  def calculate_numeric_score(score)
-    score.last.chars.uniq.length <= 1 ? score.size.to_s : "X"
+    Result.includes(:game).where(user: @user, gameday_id: @gameday.id).map(&:game).sort_by(&:name)
   end
 end

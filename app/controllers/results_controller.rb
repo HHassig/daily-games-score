@@ -3,18 +3,12 @@ class ResultsController < ApplicationController
   before_action :set_game
 
   def index
-    @editions = Result.where(game: @game).distinct.pluck(:edition)
     @results = Result.where(game: @game, user: current_user).order(edition: :desc)
-    @friends = 1
   end
 
   def show
     @result = Result.find(params[:id])
-    @game = Game.find(@result.game_id)
-    @friends = 1
-  end
-
-  def edit
+    @game = @result.game
   end
 
   def new
@@ -22,17 +16,28 @@ class ResultsController < ApplicationController
   end
 
   def create
-    @game = Game.find(params[:game_name])
-    redirect_to game_result_path(@game.name, ParseResult.new(Result.new(result_params.merge(user_id: current_user.id, game_id: params[:game_name]))).parse)
+    result = ParseResult.new(Result.new(result_params.merge(user_id: current_user.id, game_id: @game.id))).parse
+    if result&.persisted?
+      redirect_to game_result_path(@game.name, result)
+    elsif (existing = existing_result(result))
+      redirect_to game_result_path(@game.name, existing), notice: "That day was already recorded."
+    else
+      redirect_to new_game_result_path(@game.name), alert: "Couldn't read that score — paste the exact share text."
+    end
   end
 
   private
 
   def set_game
-    @game = Game.find_by(name: params[:game_name])
+    @game = Game.find_by!(name: params[:game_name])
+  end
+
+  def existing_result(parsed)
+    return nil if parsed&.gameday_id.nil?
+    Result.find_by(user: current_user, game: @game, gameday_id: parsed.gameday_id)
   end
 
   def result_params
-    params.require(:result).permit(:score, :game_id, :date, :edition, :user_id, :numeric_score, :original)
+    params.require(:result).permit(:original)
   end
 end

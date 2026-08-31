@@ -6,6 +6,7 @@ class UsersSetter
   end
 
   def set
-    @query.present? ? User.all.where("username ILIKE '%#{@query}%'") : []
+    return [] if @query.blank?
+    User.where("username ILIKE ?", "%#{ActiveRecord::Base.sanitize_sql_like(@query)}%")
   end
 end

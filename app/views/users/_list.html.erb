@@ -1,8 +1,15 @@
-<div class="" data-refresh-list-target="list">
-  <% unless @users.empty? %>
-    <% @users.each do |user| %>
-      <% friendship = Friendship.where(follower_id: current_user.id, followee_id: user.id) %>
-      <p class="text-indigo-600 m-auto mt-2 pl-2"><%= friendship.empty? ? (link_to "👍", friendships_path(user_id: user.id), data: { turbo_method: :post }) : (link_to "👎", friendship_path(friendship.first), method: :delete, data: { turbo_method: :delete, turbo_confirm: "Are you sure?"} ) %><%= link_to user.username, user_path(user.username), class: "pl-2" %></p>
-    <% end %>
+<div class="mt-2" data-refresh-list-target="list">
+  <% @users.each do |user| %>
+    <% friendship = Friendship.find_by(follower_id: current_user.id, followee_id: user.id) %>
+    <div class="flex items-center justify-between gap-2 rounded-md px-2 py-1.5 hover:bg-gray-50">
+      <%= link_to user.username, user_path(user.username), class: "font-medium text-gray-800 hover:text-indigo-600" %>
+      <% if user == current_user %>
+        <span class="text-xs text-gray-400">you</span>
+      <% elsif friendship %>
+        <%= link_to "Unfollow", friendship_path(friendship), data: { turbo_method: :delete }, class: "rounded-md px-2 py-1 text-xs font-semibold text-gray-500 ring-1 ring-inset ring-gray-300 hover:bg-gray-100" %>
+      <% else %>
+        <%= link_to "Follow", friendships_path(user_id: user.id), data: { turbo_method: :post }, class: "rounded-md bg-indigo-600 px-2 py-1 text-xs font-semibold text-white hover:bg-indigo-500" %>
+      <% end %>
+    </div>
   <% end %>
 </div>

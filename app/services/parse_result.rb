@@ -1,44 +1,46 @@
 class ParseResult
+  PARSERS = {
+    "wordle"            => ParseWordle,
+    "connections"       => ParseConnections,
+    "sportsconnections" => ParseSportsConnections,
+    "strands"           => ParseStrands,
+    "pinpoint"          => ParsePinpoint,
+    "zip"               => ParseZip,
+    "wend"              => ParseWend,
+    "patches"           => ParsePatches,
+    "tango"             => ParseTango,
+    "queens"            => ParseQueens,
+    "crossclimb"        => ParseCrossclimb,
+    "minisudoku"        => ParseMiniSudoku,
+    "minicrossword"     => ParseMiniCrossword,
+    "pips-easy"         => ParsePips,
+    "pips-medium"       => ParsePips,
+    "pips-hard"         => ParsePips,
+  }.freeze
+
   attr_reader :result
 
   def initialize(result)
     @result = result
     @game = Game.find(@result.game_id)
     @user = User.find(@result.user_id)
-    @mobile = !@result.original.include?("|")
   end
 
+  # Returns the persisted result, or nil when the text wasn't a parseable share
+  # (or the day was already recorded).
   def parse
-    @result = parse_result
-    begin
-      @result.save! if Result.where(gameday_id: @result.gameday_id, user_id: @user.id, game_id: @game.id).empty?
-    rescue ActiveRecord::NotNullViolation => e
-      return nil
+    parser = PARSERS[@game.name]
+    return nil if parser.nil?
+    @result = parser.new(@result).parse
+    return nil if @result.nil? || @result.gameday_id.nil?
+    if Result.where(gameday_id: @result.gameday_id, user_id: @user.id, game_id: @game.id).empty?
+      begin
+        @result.save!
+      rescue ActiveRecord::NotNullViolation, ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
+        return nil
+      end
+      CalculateAverage.new(@user, @game).average
     end
-    # GameStats.new(@user, @game).calculate
-    CalculateAverage.new(@user, @game).average
-    @result
-  end
-
-  private
-
-  def parse_result
-    return ParseWordle.new(@result).parse if @game.name == "wordle"
-    return ParseSportsConnections.new(@result).parse if @game.name == "sportsconnections"
-    return ParseConnections.new(@result).parse if @game.name == "connections"
-    return ParsePinpoint.new(@result).parse if @game.name == "pinpoint"
-    return ParseStrands.new(@result).parse if @game.name == "strands"
-    return ParseZip.new(@result).parse if @game.name == "zip"
-    return ParseWend.new(@result).parse if @game.name == "wend"
-    return ParsePatches.new(@result).parse if @game.name == "patches"
-    if @mobile
-      return ParseTango.new(@result).mobile if @game.name == "tango"
-      return ParseQueens.new(@result).mobile if @game.name == "queens"
-      ParseCrossclimb.new(@result).mobile if @game.name == "crossclimb"
-    else
-      return ParseTango.new(@result).parse if @game.name == "tango"
-      return ParseQueens.new(@result).parse if @game.name == "queens"
-      ParseCrossclimb.new(@result).parse if @game.name == "crossclimb"
-    end
+    @result.persisted? ? @result : nil
   end
 end

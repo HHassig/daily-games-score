@@ -1,4 +1,6 @@
 class ParseStrands
+  EPOCH = Date.new(2024, 3, 3)
+
   attr_reader :result
 
   def initialize(result)
@@ -6,18 +8,19 @@ class ParseStrands
   end
 
   def parse
-    temp = @result.original.split("\n")
-    @result.edition = temp[0].match(/#(\d+)/)[1]
-    @result.score = temp[1..].map { |t| t.gsub(/[“”]/, "") }
-    @result.numeric_score = @result.score.count("💡")
-    @result.timer = @result.numeric_score
-    @result.gameday_id = Gameday.find_or_create_by!(date: (Date.new(2024, 3, 3) + @result.edition).strftime("%Y-%m-%d")).id
+    lines = @result.original.to_s.split("\n").map(&:strip)
+    edition = lines.first.to_s[/\AStrands\s+#([\d.,]+)/, 1]
+    return @result if edition.nil? || lines.size < 2
+    @result.edition = edition.gsub(/[.,]/, "")
+    @result.score = lines[1..].map { |l| l.gsub(/[“”]/, "") }.reject(&:empty?)
+    hints = @result.original.count("💡")
+    @result.numeric_score = hints.to_s
+    @result.timer = hints
+    @result.won = true # Strands cannot be failed
+    @result.gameday_id = Gameday.find_or_create_by!(date: (EPOCH + @result.edition).strftime("%Y-%m-%d")).id
     @result
-  end
-
-  private
-
-  def calculate_numeric_score(score)
-    score.last.chars.uniq.length <= 1 ? score.size.to_s : "8"
+  rescue => e
+    Rails.logger.warn("ParseStrands failed: #{e.class}: #{e.message}") if defined?(Rails.logger)
+    @result
   end
 end

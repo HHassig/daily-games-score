@@ -12,9 +12,6 @@ export default class extends Controller {
       .then(response => response.text())
       .then((data) => {
         this.listTarget.outerHTML = data;
-        [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(function (tooltipTriggerEl) {
-          return new bootstrap.Tooltip(tooltipTriggerEl);
-        })
       })
   }
 }
