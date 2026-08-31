@@ -1,0 +1,16 @@
+<% date = Date.parse(gameday.date) %>
+<div class="flex flex-wrap items-center gap-1.5">
+  <%= link_to "←", url_for(date: (date - 1).to_s), "aria-label": "Previous day",
+        class: "rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+  <input type="date" value="<%= date %>" max="<%= Date.today %>"
+         onchange="if (this.value) window.location = <%= url_for(date: "__DATE__").to_json %>.replace('__DATE__', this.value)"
+         class="rounded-md border-0 py-1.5 text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600">
+  <% if date < Date.today %>
+    <%= link_to "→", url_for(date: (date + 1).to_s), "aria-label": "Next day",
+          class: "rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+    <%= link_to "Today", url_for(date: nil),
+          class: "rounded-md px-2.5 py-1.5 text-sm font-semibold text-indigo-600 hover:bg-indigo-50" %>
+  <% else %>
+    <span class="cursor-not-allowed rounded-md bg-gray-50 px-2.5 py-1.5 text-sm font-semibold text-gray-300 ring-1 ring-inset ring-gray-200">→</span>
+  <% end %>
+</div>

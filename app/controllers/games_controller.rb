@@ -2,7 +2,8 @@ class GamesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @games = Result.where(user: current_user).map(&:game).uniq.sort_by { |game| -Result.where(user: current_user).count { |r| r.game == game } }
+    counts = Result.where(user: current_user).group(:game_id).count
+    @games = Game.where(id: counts.keys).sort_by { |game| -counts[game.id] }
     @gameday = params[:date].present? ? Gameday.find_or_create_by!(date: params[:date]) : Gameday.find_or_create_by!(date: Date.today.strftime("%Y-%m-%d"))
   end
 

@@ -1,9 +1,9 @@
 class PagesController < ApplicationController
   def index
-    @games = Game.left_joins(:results).group("games.id").order("COUNT(results.id) DESC")
+    @games = Game.includes(:network).left_joins(:results).group("games.id").order("COUNT(results.id) DESC")
     if params[:function] == "fetch"
       FetchResult.new.score
-      redirect_to root_path
+      redirect_back fallback_location: root_path
     end
   end
 end

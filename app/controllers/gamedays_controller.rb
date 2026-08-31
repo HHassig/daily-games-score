@@ -1,7 +1,7 @@
 class GamedaysController < ApplicationController
   before_action :authenticate_user!
   def index
-    @gamedays = Gameday.all.order(date: :desc)
+    @gamedays = Gameday.where(id: Result.where(user: current_user).select(:gameday_id)).order(date: :desc).limit(60)
   end
 
   def show

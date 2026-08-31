@@ -1,0 +1,36 @@
+<header class="sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur">
+  <nav class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 px-4">
+    <%= link_to leaderboards_path, class: "flex shrink-0 items-center gap-2" do %>
+      <span class="text-xl">🏆</span>
+      <span class="hidden text-lg font-bold tracking-tight text-gray-900 sm:inline">Daily Games</span>
+    <% end %>
+    <div class="flex min-w-0 items-center gap-1 overflow-x-auto">
+      <%= nav_link "Leaderboard", leaderboards_path %>
+      <% if user_signed_in? %>
+        <%= nav_link "My games", games_path %>
+        <%= nav_link "All games", root_path %>
+        <%= nav_link "Friends", users_path %>
+      <% else %>
+        <%= nav_link "All games", root_path %>
+      <% end %>
+    </div>
+    <div class="flex shrink-0 items-center gap-1">
+      <% if user_signed_in? %>
+        <%= link_to root_path(function: "fetch"), title: "Pull new scores from Telegram",
+              class: "rounded-md px-2 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" do %>
+          ↻<span class="ml-1 hidden md:inline">Refresh scores</span>
+        <% end %>
+        <%= link_to user_path(current_user.username), title: "Profile",
+              class: "flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" do %>
+          <span class="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white"><%= current_user.username.to_s[0]&.upcase %></span>
+          <span class="hidden md:inline"><%= current_user.username %></span>
+        <% end %>
+        <%= link_to "Sign out", destroy_user_session_path, data: { turbo_method: :delete },
+              class: "rounded-md px-2 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900" %>
+      <% else %>
+        <%= link_to "Sign in", new_user_session_path, class: "rounded-md px-3 py-1.5 text-sm font-semibold text-indigo-600 hover:bg-indigo-50" %>
+        <%= link_to "Sign up", new_user_registration_path, class: "rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500" %>
+      <% end %>
+    </div>
+  </nav>
+</header>
