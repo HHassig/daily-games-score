@@ -1,22 +1,25 @@
 <header class="sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur">
   <nav class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 px-4">
-    <%= link_to leaderboards_path, class: "flex shrink-0 items-center gap-2" do %>
+    <%= link_to root_path, class: "flex shrink-0 items-center gap-2" do %>
       <span class="text-xl">🏆</span>
       <span class="hidden text-lg font-bold tracking-tight text-gray-900 sm:inline">Daily Games</span>
     <% end %>
     <div class="flex min-w-0 items-center gap-1 overflow-x-auto">
-      <%= nav_link "Leaderboard", leaderboards_path %>
+      <%= nav_link "Leaderboard", root_path %>
       <% if user_signed_in? %>
         <%= nav_link "My games", games_path %>
-        <%= nav_link "All games", root_path %>
+        <%= nav_link "All games", all_games_path %>
         <%= nav_link "Friends", users_path %>
       <% else %>
-        <%= nav_link "All games", root_path %>
+        <%= nav_link "All games", all_games_path %>
       <% end %>
     </div>
     <div class="flex shrink-0 items-center gap-1">
       <% if user_signed_in? %>
-        <%= link_to root_path(function: "fetch"), title: "Pull new scores from Telegram",
+        <% if current_user.telegram_chat_id.blank? %>
+          <%= link_to "Set up bot", telegram_setup_path, class: "whitespace-nowrap rounded-md bg-amber-100 px-2 py-1.5 text-sm font-semibold text-amber-900 hover:bg-amber-200" %>
+        <% end %>
+        <%= link_to refresh_scores_path, title: "Pull new scores from Telegram",
               class: "rounded-md px-2 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" do %>
           ↻<span class="ml-1 hidden md:inline">Refresh scores</span>
         <% end %>

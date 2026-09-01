@@ -5,7 +5,7 @@
   <div class="rounded-xl bg-white px-6 py-12 text-center shadow-sm ring-1 ring-gray-950/5">
     <p class="text-3xl">🎮</p>
     <p class="mt-2 font-medium text-gray-700">No games yet.</p>
-    <p class="mt-1 text-sm text-gray-500">Play one from <%= link_to "All games", root_path, class: "text-indigo-600 hover:underline" %> and send the share text to the Telegram bot.</p>
+    <p class="mt-1 text-sm text-gray-500">Play one from <%= link_to "All games", all_games_path, class: "text-indigo-600 hover:underline" %> and send the share text to the <%= link_to "Telegram bot", telegram_setup_path, class: "text-indigo-600 hover:underline" %>.</p>
   </div>
 <% end %>
 

@@ -1,0 +1,78 @@
+<% content_for :title, "Telegram setup · Daily Games" %>
+<%= render "shared/page_header", title: "Score bot setup",
+      subtitle: "Forward your daily game results to Telegram and they land on the leaderboard." %>
+
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+  <div class="lg:col-span-2">
+    <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5">
+      <% if user_signed_in? && current_user.telegram_chat_id.present? %>
+        <div class="mb-6 rounded-lg bg-green-50 px-4 py-3 text-sm font-medium text-green-800 ring-1 ring-inset ring-green-200">
+          ✓ Your account is linked to Telegram. Just share your scores to the bot.
+        </div>
+      <% end %>
+
+      <ol class="flex flex-col gap-6">
+        <li>
+          <h2 class="font-bold text-gray-900"><span class="text-indigo-600">1.</span> Open the bot</h2>
+          <p class="mt-1 text-sm text-gray-600">Start a chat with <span class="font-mono font-semibold">@<%= PagesHelper::BOT_USERNAME %></span> on Telegram and tap <span class="font-semibold">Start</span>.</p>
+          <%= link_to "Open @#{PagesHelper::BOT_USERNAME} ↗", "https://t.me/#{PagesHelper::BOT_USERNAME}", target: "_blank",
+                class: "mt-2 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500" %>
+        </li>
+
+        <li>
+          <h2 class="font-bold text-gray-900"><span class="text-indigo-600">2.</span> Tell it who you are</h2>
+          <% if user_signed_in? %>
+            <p class="mt-1 text-sm text-gray-600">Send the bot this email address so it can match you:</p>
+            <p class="mt-2 select-all rounded-md bg-gray-50 px-3 py-2 font-mono text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-200"><%= current_user.email %></p>
+            <p class="mt-2 text-sm text-gray-500">Or put your Telegram username in <%= link_to "your profile", edit_user_path(current_user.username), class: "text-indigo-600 hover:underline" %> and message the bot anything.</p>
+            <%= button_to "I've messaged the bot — link me", link_telegram_path,
+                  class: "mt-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+          <% else %>
+            <p class="mt-1 text-sm text-gray-600">
+              <%= link_to "Create an account", new_user_registration_path, class: "font-semibold text-indigo-600 hover:underline" %>
+              (or <%= link_to "sign in", new_user_session_path, class: "font-semibold text-indigo-600 hover:underline" %>), then come back here for your linking code.
+            </p>
+          <% end %>
+        </li>
+
+        <li>
+          <h2 class="font-bold text-gray-900"><span class="text-indigo-600">3.</span> Share your scores</h2>
+          <p class="mt-1 text-sm text-gray-600">Finish a game, hit its <span class="font-semibold">Share</span> button, and paste the result into the bot chat. Paste the text exactly as the game gives it — that's what gets read.</p>
+          <div class="mt-2 whitespace-pre-line rounded-md bg-gray-50 px-3 py-2 font-mono text-xs leading-5 text-gray-600 ring-1 ring-inset ring-gray-200">Zip #532 | 0:08 🏁
+With no hints &amp; no backtracks
+lnkd.in/zip.</div>
+          <p class="mt-2 text-sm text-gray-500">English and Dutch shares both work, from phone or desktop. A Pips share with all three difficulties records all three at once.</p>
+        </li>
+
+        <li>
+          <h2 class="font-bold text-gray-900"><span class="text-indigo-600">4.</span> Pull them in</h2>
+          <p class="mt-1 text-sm text-gray-600">Hit <span class="font-semibold">↻ Refresh scores</span> in the top bar and your results appear on the leaderboard.</p>
+          <% if user_signed_in? %>
+            <%= link_to "↻ Refresh scores now", refresh_scores_path,
+                  class: "mt-2 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+          <% end %>
+        </li>
+      </ol>
+
+      <p class="mt-6 border-t border-gray-100 pt-4 text-sm text-gray-500">
+        No score showing up? Make sure you pasted the share text unedited, and that the game is in the supported list. You can also
+        <%= link_to "type a score in by hand", all_games_path, class: "text-indigo-600 hover:underline" %>.
+      </p>
+    </div>
+  </div>
+
+  <div>
+    <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-400">Games the bot reads</h2>
+      <div class="mt-3 flex flex-col gap-2">
+        <% @games.uniq { |g| pips?(g) ? "pips" : g.id }.each do |game| %>
+          <div class="flex items-center gap-2">
+            <%= (image_tag game.logo, alt: "", class: "h-6 w-6 rounded") unless game.logo.nil? %>
+            <span class="text-sm font-medium text-gray-700"><%= pips?(game) ? "Pips" : game.display_name %></span>
+            <span class="ml-auto text-xs text-gray-400"><%= game.network.name %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
