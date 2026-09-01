@@ -12,6 +12,7 @@ class PagesController < ApplicationController
   # Re-reads the bot's inbox looking for a message from this user, by Telegram
   # username or by the account email they sent.
   def link_telegram
+    FetchResult.new.score # pick up the message they just sent
     ChatId.new(current_user).set
     if current_user.reload.telegram_chat_id.present?
       redirect_to telegram_setup_path, notice: "Telegram linked. Your shared scores will come through from now on."

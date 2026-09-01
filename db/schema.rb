@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_31_210000) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_01_190000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -88,6 +88,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_31_210000) do
     t.index ["gameday_id"], name: "index_results_on_gameday_id"
     t.index ["user_id", "game_id", "gameday_id"], name: "index_results_on_user_game_gameday", unique: true
     t.index ["user_id"], name: "index_results_on_user_id"
+  end
+
+  create_table "telegram_contacts", force: :cascade do |t|
+    t.string "chat_id", null: false
+    t.string "username"
+    t.text "last_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chat_id"], name: "index_telegram_contacts_on_chat_id", unique: true
+    t.index ["username"], name: "index_telegram_contacts_on_username"
+  end
+
+  create_table "telegram_states", force: :cascade do |t|
+    t.bigint "last_update_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|

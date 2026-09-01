@@ -1,10 +1,6 @@
-# production:
-#   periodic_cleanup:
-#     class: CleanSoftDeletedRecordsJob
-#     queue: background
-#     args: [ 1000, { batch_size: 500 } ]
-#     schedule: every hour
-#   periodic_command:
-#     command: "SoftDeletedRecord.due.delete_all"
-#     priority: 2
-#     schedule: at 5am every day
+# Solid Queue runs inside Puma (SOLID_QUEUE_IN_PUMA in config/deploy.yml).
+production:
+  fetch_telegram_scores:
+    class: FetchScoresJob
+    queue: default
+    schedule: every 5 minutes
