@@ -54,7 +54,7 @@
       <% @presenter.unplayed.each do |game| %>
         <%= link_to game_path(game.name, date: @gameday.date), title: game.display_name, class: "flex items-center gap-2 rounded-lg bg-white px-3 py-2 opacity-60 shadow-sm ring-1 ring-gray-950/5 transition hover:opacity-100" do %>
           <%= (image_tag game.logo, alt: game.name, class: "h-6 w-6 rounded") unless game.logo.nil? %>
-          <span class="text-sm font-medium text-gray-600"><%= pips?(game) ? "Pips" : game.display_name %></span>
+          <span class="text-sm font-medium text-gray-600"><%= game.tile_name %></span>
         <% end %>
       <% end %>
     </div>

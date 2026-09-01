@@ -49,7 +49,7 @@ class LeaderboardsPresenter
   private
 
   def pips?(game)
-    game.name.start_with?("pips-")
+    game.pips?
   end
 
   def pips_boards

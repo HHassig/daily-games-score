@@ -23,7 +23,18 @@ module ApplicationHelper
 
   # The three Pips difficulties are separate Game rows but ONE tile in the UI.
   def pips?(game)
-    game.name.start_with?("pips-")
+    game.pips?
+  end
+
+  NETWORK_ORDER = ["New York Times", "Linkedin"].freeze
+
+  # Games grouped for display: New York Times first, then LinkedIn, with the
+  # Pips family collapsed to a single entry.
+  def games_by_network(games, alphabetical: false)
+    games.uniq { |game| game.pips? ? "pips" : game.id }
+         .group_by(&:network)
+         .sort_by { |network, _| [NETWORK_ORDER.index(network.name) || 99, network.name] }
+         .map { |network, list| [network, alphabetical ? list.sort_by { |g| g.tile_name.downcase } : list] }
   end
 
   def rank_badge(index)
